@@ -68,8 +68,27 @@ plt.savefig('updatesvsepoch_length.png')
 plt.close()
 
 plot_decision_region(X_len , y, clsfr=ppn)
-plt.xlabel('sepal length')
-plt.ylabel('petal length')
+plt.xlabel('sepal length(cm)')
+plt.ylabel('petal length(cm)')
 plt.legend(loc='upper left')
 plt.savefig('dec_boundary_length.png')
+plt.close()
+
+# train a ppn instance on feature widths
+ppn = Perceptron() # defalut epochs=100
+ppn.fit(X_wid, y)
+print('trained ppn classifier on feature widths\nnumber of epochs required:\t{}'.format(len(ppn.err_)))
+# plot number of misclassifications vs each epoch
+# total number of epochs before return is len(ppn.err_) since each epoch misclassification number is a list of list
+plt.plot(range(1, len(ppn.err_)+1), ppn.err_, marker='o')
+plt.xlabel('#epochs')
+plt.ylabel('Total misclassified points')
+plt.savefig('updatesvsepoch_width.png')
+plt.close()
+
+plot_decision_region(X_wid , y, clsfr=ppn)
+plt.xlabel('sepal width(cm)')
+plt.ylabel('petal width(cm)')
+plt.legend(loc='upper left')
+plt.savefig('dec_boundary_width.png')
 plt.close()

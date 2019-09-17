@@ -3,17 +3,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
-def plot_decision_regions(X, Y, clsfr, res=0.2):
+def plot_decision_region(X, y, clsfr, test_idx=None, res=0.2):
     
     markers = ('s', 'x', 'o', '^', 'v')
     colors = ('red', 'blue', 'lightgreen', 'gray', 'cyan')
-    cmap = ListedColorMap(colors[:len(np.unique(y))])
+    cmap = ListedColormap(colors[:len(np.unique(y))])
 
     #plot decision surface
     x1_min, x1_max = X[:, 0].min() - 1, X[:, 0].max() + 1
     x2_min, x2_max = X[:, 1].min() - 1, X[:, 0].max() + 1
-    xx1, xx2 = np.meshgrid(np.arrange(x1_min, x1_max, resolution),
-            np.arrange(x2_min, x2_max, resolution))
+    xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, res),
+            np.arange(x2_min, x2_max, res))
 
     Z = clsfr.predict(np.array([xx1.ravel(), xx2.ravel()]).T)
     Z = Z.reshape(xx1.shape)
@@ -28,7 +28,7 @@ def plot_decision_regions(X, Y, clsfr, res=0.2):
                 y=X[y == cl, 1],
                 alpha=0.8,
                 c=colors[idx],
-                markers=markers[idx],
+                marker=markers[idx],
                 label=cl,
                 edgecolor='black')
         

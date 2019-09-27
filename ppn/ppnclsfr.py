@@ -47,7 +47,7 @@ class Perceptron(object):
             training label vector
         """
         
-        self.w_ = np.zeros(1+X.shape[1])  ## weight vector that define the hyperplane
+        self.w_ = np.zeros(1+X.shape[1])  ## weight vector that defines the hyperplane
         self.err_ = [] ##number of misclassified data points per epoch
 
         for _ in range(self.n_iter):

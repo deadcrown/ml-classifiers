@@ -37,7 +37,7 @@ def plot_decision_region(X, y, clsfr, test_idx=None, res=0.2):
                         linewidth=1, marker='o',
                         s=100, label='test set')
 
-def train_test_split(X, Y, split=0.8, seed=None):
+def train_test_split(X, Y, split=0.8, norm=None, seed=None):
         '''function to create test train split based on split size
         seed is used to reinitialize the random state to some previous state
         return X_train, X_test as numpy array
@@ -49,6 +49,8 @@ def train_test_split(X, Y, split=0.8, seed=None):
                 Dataset labels
         split: float, default=0.8
                 split ratio to be used for training and test split
+        norm: string, default=None
+                possible norm values: MAX, MEAN
         seed: int, default=None
                 seed used to reinitialize random state in case results need to be reproduced        
         '''
@@ -58,6 +60,23 @@ def train_test_split(X, Y, split=0.8, seed=None):
         if seed != None:
                 np.random.seed(seed)
         msk = np.random.rand(len(X)) < split
+        if norm != None:
+                numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+                if X.dtype in numerics:
+                        for _ in range(int(X.shape[1])):
+                                _dim = X[:,_]
+                                if norm == r'MAX':
+                                        _dim = (_dim - _dim.min())/(_dim.max() - _dim.min())
+                                        X[:,_] = _dim
+                                elif norm == r'MEAN':
+                                        _dim = (_dim - _dim.mean())/(_dim.std())
+                                        X[:,_] = _dim
+                                else:
+                                        print('use MAX or MEAN as possible norm values')
+                                        return
+                else:
+                        print('ERROR.. use numeric columns for max regularization')
+                        return
         X_train = X[msk]
         Y_train = Y[msk]
         X_test = X[~msk]
@@ -78,11 +97,6 @@ def get_minkwski_dist(x1, x2, p=2):
         print('instance size is unequal')
         return
     feat_len = len(x1)
-    if norm == True:
-        x1m, x2m = x1.mean(), x2.mean()
-        x1s, x2s = x1.std(), x2.std()
-        x1 = [(el-x1m)/x1s for el in x1]
-        x2 = [(el-x2m)/] 
     dist = 0
     for _ in range(feat_len):
         dist += math.pow(abs(x1[_] - x2[_]), p)

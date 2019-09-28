@@ -3,12 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
-def plot_decision_region(X, y, clsfr, test_idx=None, res=0.2):
-    
+def plot_decision_region(X, y, clsfr, test_idx=None, res=0.2):    
     markers = ('s', 'x', 'o', '^', 'v')
     colors = ('red', 'blue', 'lightgreen', 'gray', 'cyan')
     cmap = ListedColormap(colors[:len(np.unique(y))])
-
     #plot decision surface
     x1_min, x1_max = X[:, 0].min() - 1, X[:, 0].max() + 1
     x2_min, x2_max = X[:, 1].min() - 1, X[:, 0].max() + 1
@@ -21,7 +19,6 @@ def plot_decision_region(X, y, clsfr, test_idx=None, res=0.2):
     plt.xlim(xx1.min(), xx1.max())
     plt.ylim(xx2.min(), xx2.max())
 
-
     #plot class samples
     for idx, cl in enumerate(np.unique(y)):
         plt.scatter(x=X[y == cl, 0],
@@ -30,13 +27,11 @@ def plot_decision_region(X, y, clsfr, test_idx=None, res=0.2):
                 c=colors[idx],
                 marker=markers[idx],
                 label=cl,
-                edgecolor='black')
-        
+                edgecolor='black')        
         # highlight test samples
         if test_idx:
                 # plot all samples
                 X_test, y_test = X[test_idx, :], y[test_idx]
-
                 plt.scatter(X_test[:, 0], X_test[:, 1],
                         c='', edgecolor='black', alpha=1.0,
                         linewidth=1, marker='o',

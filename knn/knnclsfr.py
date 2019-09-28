@@ -6,7 +6,7 @@ sys.path.append('..')
 from toolbox import funclib
 from toolbox.funclib import get_minkwski_dist
 
-def fit(X_train, x_test, k=3, p=2):
+def get_nn(X_train, x_test, k=3, p=2):
     '''function to get k nearest neighbours from x_test in X_train
     return list of k tuples with instance and distance
     Parameters

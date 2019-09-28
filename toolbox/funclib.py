@@ -63,3 +63,27 @@ def train_test_split(X, Y, split=0.8, seed=None):
         X_test = X[~msk]
         Y_test = Y[~msk]
         return zip(X_train, Y_train), zip(X_test, Y_test)
+
+def get_minkwski_dist(x1, x2, p=2):
+    '''function to get minkowski distance between two instances
+    p defnines the degree of distance(default p=2(eucledian))
+    Parameters
+    ----------
+    x1, x2: {array_like}, shape=[1, n_features]
+            instances for calculating distances
+    p: int, default=2
+            degree of minkowski distance
+    '''
+    if len(x1) != len(x2):
+        print('instance size is unequal')
+        return
+    feat_len = len(x1)
+    if norm == True:
+        x1m, x2m = x1.mean(), x2.mean()
+        x1s, x2s = x1.std(), x2.std()
+        x1 = [(el-x1m)/x1s for el in x1]
+        x2 = [(el-x2m)/] 
+    dist = 0
+    for _ in range(feat_len):
+        dist += math.pow(abs(x1[_] - x2[_]), p)
+    return math.pow(dist, 1./p)

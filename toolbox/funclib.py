@@ -40,7 +40,7 @@ def plot_decision_region(X, y, clsfr, test_idx=None, res=0.2):
 def train_test_split(X, Y, split=0.8, norm=None, seed=None):
         '''function to create test train split based on split size
         seed is used to reinitialize the random state to some previous state
-        return X_train, X_test as numpy array
+        return X_train, X_test as iterables with zip for data instance and labels
         Parameters
         ----------
         X: {array-like}, shape=[n_samples, n_features]

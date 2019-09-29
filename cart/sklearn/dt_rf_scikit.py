@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-sys.path.append("..")
+sys.path.append("../..")
 from toolbox.funclib import plot_decision_region
 
 from matplotlib import pyplot as plt
@@ -10,6 +10,8 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier as dt
+from sklearn.ensemble import RandomForestClassifier
+
 from sklearn.tree import export_graphviz
 
 iris = datasets.load_iris()
@@ -40,12 +42,13 @@ mean_scaler.transform(X_test)
 
 print('scaled train:\n{}\nscaled test:\n{}'.format(X_train[:2], X_test[:2]))
 
+# single decision tree using a criterion and max_depth for regularization
 tree = dt(
     criterion='entropy',
     max_depth=6,
     random_state=7
 )
-print(tree)
+print('DT params:\n{}'.format(tree))
 
 # using scaled features for better decision boundary viz
 tree.fit(X_train, Y_train)
@@ -70,3 +73,19 @@ grph_data = export_graphviz(
 )
 grph = graph_from_dot_data(grph_data)
 grph.write_png('dt_6dentropy_iris_petal_length_width_graph.png')
+
+# random forest implementation for sklearn
+# n_estimators -> number of trees to be averaged out
+# n_jobs -> number of cores to be used for parallel training
+forest = RandomForestClassifier(
+    criterion='gini',
+    n_estimators=25,
+    random_state=7,
+    n_jobs=4
+)
+print('RF params:\n{}'.format(forest))
+print('fit RF...')
+forest.fit(X_train, Y_train)
+plot_decision_region(X_comb, Y_comb, clsfr=forest, test_idx=range(105,150))
+plt.legend(loc='upper left')
+plt.savefig('rf_25egini_iris_petal_length_width.png')

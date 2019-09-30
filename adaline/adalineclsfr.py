@@ -81,4 +81,4 @@ class Adaline(object):
     def predict(self, X):
         '''predict for given point based on sign(w.T.X)
         '''
-        return np.where(self.activation_function(self.net_input(add_dim(X)) >= 0.0, 1, -1))
+        return np.where(self.activation_function(self.net_input(self.add_dim(X)) >= 0.0, 1, -1))

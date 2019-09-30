@@ -62,7 +62,7 @@ class Adaline(object):
         if loss_epoch[epoch] == 0 | n_iter
         break'''
         self.loss_ = []
-        X = add_dim(X)
+        X = self.add_dim(X)
         rand_seed = np.random.RandomState(self.random_state)
         self.w_ = rand_seed.normal(loc=0.0, scale=0.01, size=X.shape[1])
         epoch = 0

@@ -35,7 +35,6 @@ class LogisticGD(object):
             # update weight
             self.w_ -= self.eta*np.dot(X.T, err)
             # -(yi(log(h(xi))) + (1-yi)(log(1-h(xi)))
-            # epoch_loss = (-y.dot(np.log(z_out)) - ((1 - y).dot(np.log(1 - z_out))))
             epoch_loss = -np.dot(y.T, np.log(z_out)) - np.dot(1-y.T, np.log(1-z_out)) 
             self.loss_.append(epoch_loss)
             print('epoch:{}\tloss:{}'.format(epoch, epoch_loss))

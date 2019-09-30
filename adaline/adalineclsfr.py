@@ -10,7 +10,6 @@ Recipe for implementing parametric discriminative models using batch gradient de
 7. break if net loss = 0 or max_epochs
 '''
 
-import sys
 import numpy as np
 
 class Adaline(object):
@@ -46,8 +45,13 @@ class Adaline(object):
         '''use identity function as activation
         return the passed vector'''
         return X
-        
-    def train(self, X, y):
+    
+    def add_dim(self, X):
+        ext_dim = np.ones((X.shape[0], 1)) # column vector to assimilate bias in weight
+        X = np.append(X, ext_dim, axis=1)
+        return X
+
+    def fit(self, X, y):
         '''initialize weight to random gaussian noise with mean=0 ans std_dev=0.01
         assimilate bias in weight vector by adding 1 constant dimension to X
         while epoch < n_iter 
@@ -58,19 +62,20 @@ class Adaline(object):
         if loss_epoch[epoch] == 0 | n_iter
         break'''
         self.loss_ = []
-        ext_dim = np.ones((X.shape(0), 1)) # column vector to assimilate bias in weight
-        X = np.append(X, ext_dim, axis=1)
+        X = add_dim(X)
         rand_seed = np.random.RandomState(self.random_state)
-        self.w_ = rand_seed.normal(loc=0.0, scale=0.01, size=X.shape(1)+1)
-        while epoch < range(self.n_iter):
-            wx = self.net_input(X, self.w_)
+        self.w_ = rand_seed.normal(loc=0.0, scale=0.01, size=X.shape[1])
+        epoch = 0
+        for epoch in range(self.n_iter):
+            wx = self.net_input(X)
             z = self.activation_function(wx)
             b = z[0]*self.eta
             errors = y - z
             # update weight
-            w = w - self.eta*(np.dot(X.T, errors))
-            epoch_loss = (errors**2).sum()/2
+            self.w_ = self.w_ - self.eta*(np.dot(X.T, errors))
+            epoch_loss = np.float64(errors**2).sum()/2
             self.loss_.append(epoch_loss)
+            print('n_epoch: {}\nepoch_loss: {}'.format(epoch, epoch_loss))
         return self
     
     def predict(self, X):

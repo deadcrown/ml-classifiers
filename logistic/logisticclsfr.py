@@ -27,17 +27,19 @@ class LogisticGD(object):
         # init weight drawn from random gaussian with mean 0 and variance 0.01
         X = self.add_dim(X)        
         self.w_ = seed.normal(loc=0.0, scale=0.01, size=X.shape[1])
+        self.loss_ = []
         for epoch in range(self.n_iter):
             z = self.net_input(X)
             z_out = self.activation_function(z)
             err = z_out - y 
             # update weight
-            self.w_ -= np.dot(X.T, self.w_)
+            self.w_ -= self.eta*np.dot(X.T, err)
             # -(yi(log(h(xi))) + (1-yi)(log(1-h(xi)))
-            log_loss = -np.dot(y.T, np.log(z_out)) - np.dot(1-y.T, np.log(1-z_out)) 
-            self.loss_.append(log_loss)
-            print('epoch:{}\terr:{}'.format(epoch, log_loss))
+            # epoch_loss = (-y.dot(np.log(z_out)) - ((1 - y).dot(np.log(1 - z_out))))
+            epoch_loss = -np.dot(y.T, np.log(z_out)) - np.dot(1-y.T, np.log(1-z_out)) 
+            self.loss_.append(epoch_loss)
+            print('epoch:{}\tloss:{}'.format(epoch, epoch_loss))
         return self
 
     def predict(self, X):
-        return np.where(self.activation_function(self.net_input(self.add_dim(X))) >= 0.0, 1, -1)
+        return np.where(self.activation_function(self.net_input(self.add_dim(X))) >= 0.5, 1, 0)

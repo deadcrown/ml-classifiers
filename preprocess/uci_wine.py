@@ -10,6 +10,7 @@ import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 
 # shape=[178,14]
 # wine = pd.read_csv(r'https://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data', header=None)
@@ -46,7 +47,8 @@ X_test_std = mean_sclr.transform(X_test)
 
 print(X_train_norm, X_train_std)
 
-# feature selection using regularization 
+# ----------FEATURE SELECTION----------
+# regularization method
 # using logistic for feature comparison
 # checking feature importance describing class label 0 in the wine dataset
 # lr_coef stores the weight vector for each class label using OvR for multiclass classification
@@ -76,5 +78,23 @@ plt.ylabel('weights')
 plt.xscale('log')
 plt.legend(loc='upper left')
 ax.legend(loc='upper center', bbox_to_anchor=(1.38,1.03), ncol=1, fancybox=True)
-plt.savefig('LR_feat_selection.png')
+plt.savefig('LR_feat_selection_class0.png')
+plt.close()
+
+# feat selection method 2 Random forest
+# RF doesnt require scaled/normalized features and works out of box
+feat_names = wine.columns[1:]
+rf = RandomForestClassifier(criterion='entropy', n_estimators=1000, random_state=7, n_jobs=4)
+rf.fit(X_train, Y_train)
+feat_imp = rf.feature_importances_
+print('Feature_Name\tImportance')
+for i in range(len(feat_imp)):
+    print('{}\t{}'.format(wine.columns[i+1], feat_imp[i]))
+
+#plot rf results
+indices = np.argsort(feat_imp)[::-1]
+plt.bar(range(X_train.shape[1]), feat_imp[indices])
+plt.xticks(range(X.shape[1]), feat_names, rotation=90)
+plt.tight_layout()
+plt.savefig('rf_feat_selection_class0.png')
 plt.close()

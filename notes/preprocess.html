@@ -1,7 +1,7 @@
-<h3>Data Preprocessing Notes</h3>
+<h2>Data Preprocessing Notes</h2>
 <hr>
 <p>
-    <b>Removing data on Nan</b><br>
+    <strong>Removing data on Nan</strong><br>
     df.dropna(axis=0)-> drop rows with nulls<br>
     df.dropna(axis=1)-> drop columns with nulls<br>
     df.dropna(thresh=k)-> drop rows with nulls > k<br>
@@ -10,18 +10,18 @@
     df.dropna()-> defaults to axis=0(drop rows)
 </p>
 <p>
-    <b>Imputing data on Nan</b><br>
+    <strong>Imputing data on Nan</strong><br>
     Using sklearn transformer Imputer<br>
     from sklearn.preprocessing import Imputer<br>
     Imputer parameters: strategy=mean/median/most_frequent; axis=0(along columns)/1(along rows); missing_values='NaN'
 </p> 
 <p>
-    <b>Handling categorical features</b><br>
-    <i><b>Mapping Ordinal Features:</b></i> Use df['ordinal_column'].map(map_dict) to map categorical 
+    <strong>Handling categorical features</strong>
+    <br><i><strong>Mapping Ordinal Features:</strong></i> Use df['ordinal_column'].map(map_dict) to map categorical 
     values to defined values relation of ordinal variable
-    <br><i><b>Mapping Class Labels:</b></i>Use pandas map() or sklearn transformer LabelEncoder 
+    <br><i><strong>Mapping Class Labels:</strong></i>Use pandas map() or sklearn transformer LabelEncoder 
     Eg LabelEncoder().fit_transform(df['class_labels'].values)
-    <br><i><b>OneHotEncoding:</b></i> To prevent false ordering between nominal features implement OneHotEncoding to create dummified variables for each value of the mapped nominal variable value.
+    <br><i><strong>OneHotEncoding:</strong></i> To prevent false ordering between nominal features implement OneHotEncoding to create dummified variables for each value of the mapped nominal variable value.
     Use sklearn LabelEncoder first on the nominal variable followed by OneHotEncoder fit_transform.
     Alternatively use pandas.get_dummies()<br>
     <i>Example</i> OneHotEncoder(categorical_features=[0]).fit_transform(df.columns[:-1].values)
@@ -29,5 +29,52 @@
     <br>pd.get_dummies(df[df.columns[:-1]], drop_first=True) to reduce correlation among dummified variables by dropping one feature value as (0,0) for other two is the same thing 
 </p>
 <p>
-    <b>Feature scaling</b><br>
+    <strong>Feature scaling</strong>
+    <br>Decision trees are an exception to feature scaling, as we do axis aligned splits using KD Trees. 
+    However for other algorithms(both parametric and non-parametric) if the position of data point in the feature space is of importance then feature scalign becomes cruial.
+    Two common approcahes are <mark> Normalization</mark> and <mark>Standardization</mark>
+    <br><strong>Normalization</strong> refers to min-max scaling which is <br><img src="images/norm.jpeg">
+    <br>sklearn implementation needs a MinMaxScaler transformer 
+    <br><code>
+        from sklearn.preprocessing import MinMaxScaler<br>
+        min_max_sclr = MinMaxScaler()<br>
+        X_train_norm = min_max_sclr.fit_transform(X_train)<br>
+        X_test_norm = min_max_sclr.transform(X_test)<br>
+    </code>
+    <br><strong>Standardization</strong> commonly implies taking mean standardization which is 
+    <br><img src="images/mean_std.jpeg">
+    <br>sklearn implementation needs a StandardScaler transformer<br>
+    <code>
+        from sklearn.preprocessing import StandardScaler<br>
+        ssc = StandardScaler()<br>
+        X_train_std = ssc.fit_transform(X_train)<br>
+        X_test_std = ssc.transform(X_test)
+    </code>
+    <br>Usually standardization with mean centered at zero is better to learn weights tending towards zero as well.Also using standardization makes the data less sensitive to outliers and 
+    also incorporates information about these outliers in train  
 </p>
+<p>
+    <strong>Train Test Split</strong>
+    <br>Can use sklearn model selection function train_test_split(from sklearn.model_selection import train_test_split)
+    <br>parameters: train_test_split(X, Y, test_size, stratify, random_state)
+    <br>test_size: test_split size; stratify=Y(class labels): to ensure that proportion of labels in train and test is same
+</p>
+<p>
+    <strong>Selecting important features</strong> <br>This is important particularly in case of high variance(overfitting). One way to address variance is to reduce data dimensionality.
+    Basically there are two main ways to reduce data dimensionality: <mark>Feature Selection</mark> and <mark>Feature Extraction</mark><br>
+    Feature selection refers to selecting a subset of features based on their importance in describing the test dataset. Methods which can be used are <i>Regularization</i>,<i>Random Forest</i> which tells the feature importance based on the contribution in reducing the impurity after the split<br>
+    <br>Also regularization parameter can also be increased for a simpler model reducing variance using a L1(sparse) or a L2 regularizer where
+    L1 is <br><img src="images/L1.jpeg">
+    <br> and L2 is <br><img src="images/L2.jpeg"> 
+    <br> Geometrically the optimization function is now bounded in the space defined by the L1(diamond) or L2(sphere). Since these are centered at origin 
+    the optimization function makes a compromize on the gradient contour by digging into the hill limited by the regularizer. Increasing or decreasing the reg parameter(lambda) increases/decreases the radius of these restrictive spaces as the 
+    optimization is more focused on minimizing the second term of the ERM equation. Hence model fit can be iterated with different values of reg parameter which will result in different weights assigned. This can now be plotted to see which feature contribute 
+    to maximum weights on varying reg parameter. Example<br>
+    <br><code>
+        for c in np.arange(-4., 6.)<br>
+        &emsp;&emsp;LogisticRegression(penalty='L1', C=10**c)
+    </code><br>
+    <img src="images/L1featselect.jpeg" width="800">
+    <br><br><br><mark>Random Forest</mark> for feature imprtance based on features which resulted in maximum loss of impurity in the dataset. This measurement implies 
+    that features which result in average maximum decrease of impurity across all trees are ranked higher in terms of them alone explaining the train dataset.
+    <br>

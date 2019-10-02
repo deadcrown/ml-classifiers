@@ -60,12 +60,15 @@
     <br>test_size: test_split size; stratify=Y(class labels): to ensure that proportion of labels in train and test is same
 </p>
 <p>
-    <strong>Selecting important features</strong> <br>This is important particularly in case of high variance(overfitting). One way to address variance is to reduce data dimensionality.
-    Basically there are two main ways to reduce data dimensionality: <mark>Feature Selection</mark> and <mark>Feature Extraction</mark><br>
-    Feature selection refers to selecting a subset of features based on their importance in describing the test dataset. Methods which can be used are <i>Regularization</i>,<i>Random Forest</i> which tells the feature importance based on the contribution in reducing the impurity after the split<br>
-    <br>Also regularization parameter can also be increased for a simpler model reducing variance using a L1(sparse) or a L2 regularizer where
-    L1 is <br><img src="images/L1.jpeg">
-    <br> and L2 is <br><img src="images/L2.jpeg"> 
+    <strong>Selecting important features</strong> 
+    <br>This is important particularly in case of high variance(overfitting). One way to address variance is to reduce data dimensionality.
+    Basically there are two main ways to reduce data dimensionality: <mark>Feature Selection</mark> and <mark>Feature Extraction</mark>
+    <br><br>&bull;<strong>Feature selection</strong> refers to selecting a subset of features based on their importance in describing the test dataset. Methods which can be used are 
+    <br> <i>Regularization parameter</i> variation for a paramteric model(eg Logistic Regression) and then plotting the weight coeffiecient distribution over features with increasing value of reg parameter
+    <br><i>Random Forest</i> which tells the feature importance based on the contribution in reducing the impurity after the split. sklearn has a nice abstraction for getting feature importance .feature_importances_
+    <br><br>
+    L1 regularizer <br><img src="images/L1.jpeg">
+    <br> L2 <br><img src="images/L2.jpeg"> 
     <br> Geometrically the optimization function is now bounded in the space defined by the L1(diamond) or L2(sphere). Since these are centered at origin 
     the optimization function makes a compromize on the gradient contour by digging into the hill limited by the regularizer. Increasing or decreasing the reg parameter(lambda) increases/decreases the radius of these restrictive spaces as the 
     optimization is more focused on minimizing the second term of the ERM equation. Hence model fit can be iterated with different values of reg parameter which will result in different weights assigned. This can now be plotted to see which feature contribute 
@@ -75,6 +78,17 @@
         &emsp;&emsp;LogisticRegression(penalty='L1', C=10**c)
     </code><br>
     <img src="images/L1featselect.jpeg" width="800">
-    <br><br><br><mark>Random Forest</mark> for feature imprtance based on features which resulted in maximum loss of impurity in the dataset. This measurement implies 
-    that features which result in average maximum decrease of impurity across all trees are ranked higher in terms of them alone explaining the train dataset.
-    <br>
+    <br><br><br><mark><strong>Random Forest</strong></mark> for feature imprtance based on features which resulted in maximum loss of impurity in the dataset. In RF feature selection there is no assumption of linear decision boundary. 
+    This measurement implies that features which result in average maximum decrease of impurity across all trees are ranked higher in terms of them alone explaining the train dataset.
+    <br>scikit implementation<br>
+    <code>
+        from sklearn.ensemble import RandomForestClassifier
+        rf = RandomForestClassifier(criterion='entropy', n_estimators=1000, n_jobs=4)
+        rf.fit(X_train)
+        rf.feature_importances_
+    </code><br>
+    sample plot for UCI wine<br>
+    <img src="images/RF_feat.jpeg", width="800", height="400">
+    <br><br><br>
+    &bull;<mark><strong>Feature Extraction</strong></mark>
+</p>

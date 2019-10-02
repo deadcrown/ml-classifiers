@@ -69,7 +69,7 @@
     <br> Geometrically the optimization function is now bounded in the space defined by the L1(diamond) or L2(sphere). Since these are centered at origin 
     the optimization function makes a compromize on the gradient contour by digging into the hill limited by the regularizer. Increasing or decreasing the reg parameter(lambda) increases/decreases the radius of these restrictive spaces as the 
     optimization is more focused on minimizing the second term of the ERM equation. Hence model fit can be iterated with different values of reg parameter which will result in different weights assigned. This can now be plotted to see which feature contribute 
-    to maximum weights on varying reg parameter. Example<br>
+    to maximum weights on varying reg parameter. Example using Logistic regression<br>
     <br><code>
         for c in np.arange(-4., 6.)<br>
         &emsp;&emsp;LogisticRegression(penalty='L1', C=10**c)

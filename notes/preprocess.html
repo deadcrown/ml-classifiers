@@ -1,0 +1,33 @@
+<h3>Data Preprocessing Notes</h3>
+<hr>
+<p>
+    <b>Removing data on Nan</b><br>
+    df.dropna(axis=0)-> drop rows with nulls<br>
+    df.dropna(axis=1)-> drop columns with nulls<br>
+    df.dropna(thresh=k)-> drop rows with nulls > k<br>
+    df.dropna(subset=[k])-> drop rows by checking for nulls only in column k<br>
+    df.dropna(how='all')-> drop rows with all nulls<br>
+    df.dropna()-> defaults to axis=0(drop rows)
+</p>
+<p>
+    <b>Imputing data on Nan</b><br>
+    Using sklearn transformer Imputer<br>
+    from sklearn.preprocessing import Imputer<br>
+    Imputer parameters: strategy=mean/median/most_frequent; axis=0(along columns)/1(along rows); missing_values='NaN'
+</p> 
+<p>
+    <b>Handling categorical features</b><br>
+    <i><b>Mapping Ordinal Features:</b></i> Use df['ordinal_column'].map(map_dict) to map categorical 
+    values to defined values relation of ordinal variable
+    <br><i><b>Mapping Class Labels:</b></i>Use pandas map() or sklearn transformer LabelEncoder 
+    Eg LabelEncoder().fit_transform(df['class_labels'].values)
+    <br><i><b>OneHotEncoding:</b></i> To prevent false ordering between nominal features implement OneHotEncoding to create dummified variables for each value of the mapped nominal variable value.
+    Use sklearn LabelEncoder first on the nominal variable followed by OneHotEncoder fit_transform.
+    Alternatively use pandas.get_dummies()<br>
+    <i>Example</i> OneHotEncoder(categorical_features=[0]).fit_transform(df.columns[:-1].values)
+    <br>pd.get_dummies(df[df.columns[:-1]]) to dummify all string variables leaving all numeric intact
+    <br>pd.get_dummies(df[df.columns[:-1]], drop_first=True) to reduce correlation among dummified variables by dropping one feature value as (0,0) for other two is the same thing 
+</p>
+<p>
+    <b>Feature scaling</b><br>
+</p>

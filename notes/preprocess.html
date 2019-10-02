@@ -63,7 +63,7 @@
     <strong>Selecting important features</strong> 
     <br>This is important particularly in case of high variance(overfitting). One way to address variance is to reduce data dimensionality.
     Basically there are two main ways to reduce data dimensionality: <mark>Feature Selection</mark> and <mark>Feature Extraction</mark>
-    <br><br>&bull;<strong>Feature selection</strong> refers to selecting a subset of features based on their importance in describing the test dataset. Methods which can be used are 
+    <br><br>&bull;<mark><strong>Feature selection</strong></mark> refers to selecting a subset of features based on their importance in describing the test dataset. Methods which can be used are 
     <br> <i>Regularization parameter</i> variation for a paramteric model(eg Logistic Regression) and then plotting the weight coeffiecient distribution over features with increasing value of reg parameter
     <br><i>Random Forest</i> which tells the feature importance based on the contribution in reducing the impurity after the split. sklearn has a nice abstraction for getting feature importance .feature_importances_
     <br><br>
@@ -78,17 +78,25 @@
         &emsp;&emsp;LogisticRegression(penalty='L1', C=10**c)
     </code><br>
     <img src="images/L1featselect.jpeg" width="800">
-    <br><br><br><mark><strong>Random Forest</strong></mark> for feature imprtance based on features which resulted in maximum loss of impurity in the dataset. In RF feature selection there is no assumption of linear decision boundary. 
+    <br><br><strong>Random Forest</strong> for feature imprtance based on features which resulted in maximum loss of impurity in the dataset. In RF feature selection there is no assumption of linear decision boundary. 
     This measurement implies that features which result in average maximum decrease of impurity across all trees are ranked higher in terms of them alone explaining the train dataset.
     <br>scikit implementation<br>
     <code>
-        from sklearn.ensemble import RandomForestClassifier
-        rf = RandomForestClassifier(criterion='entropy', n_estimators=1000, n_jobs=4)
-        rf.fit(X_train)
-        rf.feature_importances_
+        from sklearn.ensemble import RandomForestClassifier<br>
+        rf = RandomForestClassifier(criterion='entropy', n_estimators=1000, n_jobs=4)<br>
+        rf.fit(X_train)<br>
+        rf.feature_importances_<br>
     </code><br>
     sample plot for UCI wine<br>
     <img src="images/RF_feat.jpeg", width="800", height="400">
     <br><br><br>
-    &bull;<mark><strong>Feature Extraction</strong></mark>
+    &bull;<mark><strong>Feature Extraction</strong></mark> implies taking the original dimensions and then projecting them to some lower dimension space to reduce dimensionality and also can be used for decision boundary viz purpose.
+    PCA is one instance of feature extraction where the data is projected onto lower dimension space with the axes of this space being featues which explain the maximum variance for the class labels.
+    <br>scikit implementation requires using a transformer PCA. After transformation use this dim space to train the model estimator<br>
+    <code>
+        from sklearn.model_decomposition import PCA<br>
+        pca = PCA(n_components=2)<br>
+        X_train_pca = pca.fit_transform(X_train)<br>
+        X_test_pca = pca.transform(X_test)<br>
+    </code>
 </p>

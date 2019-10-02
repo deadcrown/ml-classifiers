@@ -58,15 +58,23 @@ colors = ['blue', 'green', 'red', 'cyan',
 # each iteration stores the weight vector for all 3 classes
 # can be accessed through lr.coef_[]
 # wt_ matrix with columns as feature vector weights and length = number of c used
-for c in np.arange(-5, 6):
-    lr = LogisticRegression(penalty='L1', C=10**c)
+for c in np.arange(-5., 6.):
+    lr = LogisticRegression(penalty='l1', C=10**c)
     lr.fit(X_train_std, Y_train)
     wt_.append(lr.coef_[0])
     c_.append(10**c)
 wt_ = np.array(wt_)
 fig = plt.figure()
-ax = fig.subplots()
+ax = plt.subplot(111)
 
-feat_color_zip = zip(np.arange(wt_.shape[1]), colors)
+feat_color_zip = zip(range(wt_.shape[1]), colors)
 for ix, color in feat_color_zip:
-    plt.plot(wt_, wine.columns[ix], color=color)
+    plt.plot(c_, wt_[:,ix], color=color, label=wine.columns[ix+1])
+plt.axhline(0, color='black', linestyle='--')
+plt.xlabel('C')
+plt.ylabel('weights')
+plt.xscale('log')
+plt.legend(loc='upper left')
+ax.legend(loc='upper center', bbox_to_anchor=(1.38,1.03), ncol=1, fancybox=True)
+plt.savefig('LR_feat_selection.png')
+plt.close()

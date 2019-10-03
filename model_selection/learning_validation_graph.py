@@ -63,7 +63,7 @@ print('stratified k-fold CV accuracy over 10 folds: {0:0.2f} +/- {1:0.2f}'.forma
 data_size-data size used for the particular epoch; 
 train_scr:accuracy over training data size for the epoch; 
 test_scr: accuracy over CV for that data size epoch'''
-
+'''
 epoch_size, train_scr, test_scr = learning_curve(
     estimator=lr_pipe,
     X = X_train,
@@ -88,9 +88,37 @@ plt.ylim((0.7,1))
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch Size')
 plt.legend(loc='lower right')
-plt.title('Learning rate: UCI wine dataset(142 train samples) with 10 cv')
+plt.title('Learning curve: UCI wine dataset(142 train samples) with 10 cv')
 plt.savefig('wine_train_cv_LR_learning.png')
 plt.show()
 plt.close()
-
+'''
 # ----VALIDATION CURVE----
+# validation curve can be used to identify optimal parameter value for a list of regularization parameters
+# training and validation acc can be plotted against different lambda values
+
+param_range=10**np.arange(-12.,12.)
+train_scr, test_scr = validation_curve(
+    X = X_train,
+    y = Y_train,
+    estimator=lr_pipe,
+    param_name = 'logisticregression__C',
+    param_range = param_range,
+    cv = 10,
+    n_jobs=2
+)
+print('validation curve test scr:\n{}'.format(test_scr))
+
+mean_train = np.mean(train_scr, axis=1)
+std_train = np.std(train_scr, axis=1)
+mean_test = np.mean(test_scr, axis=1)
+std_test = np.std(test_scr, axis=1)
+
+# plot accuracy against lambda
+plt.plot(param_range, mean_train, label='training accuracy', color='green')
+plt.plot(param_range, mean_test, label='cv accuracy', color='blue')
+plt.xlabel('regularization parameter C of LR')
+plt.ylabel('Accuracy')
+plt.xscale('log')
+plt.legend(loc='lower right')
+plt.savefig('wine_LR_validation.png')

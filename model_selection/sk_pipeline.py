@@ -54,7 +54,7 @@ print('unique labels:\ntrain:{}\ntest:{}'.format(np.unique(Y_train, return_count
 pipe_lr = make_pipeline(
     StandardScaler(),
     PCA(n_components=2),
-    LogisticRegression(C=1000, penalty='l1', multi_class='ovr', solver='liblinear')
+    LogisticRegression(C=100, penalty='l1', multi_class='ovr', solver='liblinear')
 )
 print(pipe_lr)
 pipe_lr.fit(X_train, Y_train)

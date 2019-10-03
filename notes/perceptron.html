@@ -1,0 +1,18 @@
+<h2>Perceptron - Notes on a linear classifier</h2>
+<hr>
+<i>Ahmad Faiz</i>
+<br><br>
+<img src="images/ppn.jpeg" width="600">
+<br><strong>A binary linear classifier with a 0/1 loss</strong>
+<br><strong>Assumption:</strong><i>A linear separable boundary exist between the data points when mapped to their feature space</i>
+<p>
+    The perceptron is actually the one of the many infinite boundaries that separate these two classes. Hence in two dimensions it is a line in 3d its a plane and in higher dimensions it becomes a hyperplane(linearly separable in that dimension). 
+    It is one of the many infinite possible hyperplane because weight update rule is not optimized rather done after each training point based on a 0/1 loss function.
+    Now the parametric equation of a plane is a vector perpendicular to that plane. This vector defines the plane and hence defines the perceptron. Also the vector perpendicular to the plane is positive on one side and negative on other.
+    Hence if there are only two possible labels(+1 and -1) then sign(instance) of all points on one side of the hyperplane is positive and sign(instance) of all data points on the other side is negative
+</p>
+<p>
+    This concept is utilized by the perceptron algorithm which for a given hyperplane(i.e a given vector w) checks the condition <code> np.dot(X.T, w) <= 0. </code>
+    If condition is true then the weight vector is updated by the rule <code> w := w + yx </code> </code> Hence the hyperplane gets adjusted on occcuring any misclassified point based on the vector w.
+    Hence the notion of 0/1 loss in tht dont touch the plane if correct train classification(0 loss) but change the hyperplane on getting wrong classification(1 loss)
+</p>

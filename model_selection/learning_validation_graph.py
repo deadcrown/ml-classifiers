@@ -34,9 +34,6 @@ pca = PCA(n_components=2)
 # define estimator
 lr = LogisticRegression(C=100, solver='liblinear', multi_class='ovr', penalty='l1', random_state=7)
 
-# stock DT for fun
-dt = DecisionTreeClassifier(criterion='entropy', max_depth=7, random_state=7)
-
 lr_pipe = make_pipeline(
     std,
     pca,
@@ -58,6 +55,7 @@ cv_scr = cross_val_score(
 )
 print('stratified k-fold CV accuracy over 10 folds: {0:0.2f} +/- {1:0.2f}'.format(np.mean(cv_scr), np.std(cv_scr)))
 
+# ----LEARNING CURVES----
 # get learning curve for the pipeline with training and validation accuracy over increasing samples
 # batch data sie can be controlled by the argument train_sizes of learning_curve() 
 # eg np.linspace(0.1,1.0,10) for 10 relatively increasing batches by using 0.1 to 1. percentage as bin size for each
@@ -94,3 +92,5 @@ plt.title('Learning rate: UCI wine dataset(142 train samples) with 10 cv')
 plt.savefig('wine_train_cv_LR_learning.png')
 plt.show()
 plt.close()
+
+# ----VALIDATION CURVE----

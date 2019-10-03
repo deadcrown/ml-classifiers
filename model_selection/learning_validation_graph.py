@@ -63,7 +63,7 @@ print('stratified k-fold CV accuracy over 10 folds: {0:0.2f} +/- {1:0.2f}'.forma
 data_size-data size used for the particular epoch; 
 train_scr:accuracy over training data size for the epoch; 
 test_scr: accuracy over CV for that data size epoch'''
-'''
+
 epoch_size, train_scr, test_scr = learning_curve(
     estimator=lr_pipe,
     X = X_train,
@@ -92,7 +92,7 @@ plt.title('Learning curve: UCI wine dataset(142 train samples) with 10 cv')
 plt.savefig('wine_train_cv_LR_learning.png')
 plt.show()
 plt.close()
-'''
+
 # ----VALIDATION CURVE----
 # validation curve can be used to identify optimal parameter value for a list of regularization parameters
 # training and validation acc can be plotted against different lambda values

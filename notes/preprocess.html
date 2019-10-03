@@ -1,19 +1,24 @@
 <h2>Data Preprocessing Notes</h2>
 <hr>
+<i>Ahmad Faiz</i>
 <p>
     <strong>Removing data on Nan</strong><br>
-    df.dropna(axis=0)-> drop rows with nulls<br>
-    df.dropna(axis=1)-> drop columns with nulls<br>
-    df.dropna(thresh=k)-> drop rows with nulls > k<br>
-    df.dropna(subset=[k])-> drop rows by checking for nulls only in column k<br>
-    df.dropna(how='all')-> drop rows with all nulls<br>
-    df.dropna()-> defaults to axis=0(drop rows)
+    <code>df.dropna(axis=0)</code> drop rows with nulls<br>
+    <code>df.dropna(axis=1)</code> drop columns with nulls<br>
+    <code>df.dropna(thresh=k)</code> drop rows with nulls > k<br>
+    <code>df.dropna(subset=[k])</code> drop rows by checking for nulls only in column k<br>
+    <code>df.dropna(how='all')</code> drop rows with all nulls<br>
+    <code>df.dropna()</code> defaults to axis=0(drop rows)
 </p>
 <p>
     <strong>Imputing data on Nan</strong><br>
     Using sklearn transformer Imputer<br>
-    from sklearn.preprocessing import Imputer<br>
     Imputer parameters: strategy=mean/median/most_frequent; axis=0(along columns)/1(along rows); missing_values='NaN'
+    <br><code> 
+        from sklearn.preprocessing import Imputer<br>
+        imp = Imputer(strategy='mean', axis=0, missing_values='NaN')<br>
+        X_train_imp = imp.fit_transform(X_train)<br>
+        </code>
 </p> 
 <p>
     <strong>Handling categorical features</strong>
@@ -24,9 +29,10 @@
     <br><i><strong>OneHotEncoding:</strong></i> To prevent false ordering between nominal features implement OneHotEncoding to create dummified variables for each value of the mapped nominal variable value.
     Use sklearn LabelEncoder first on the nominal variable followed by OneHotEncoder fit_transform.
     Alternatively use pandas.get_dummies()<br>
-    <i>Example</i> OneHotEncoder(categorical_features=[0]).fit_transform(df.columns[:-1].values)
-    <br>pd.get_dummies(df[df.columns[:-1]]) to dummify all string variables leaving all numeric intact
-    <br>pd.get_dummies(df[df.columns[:-1]], drop_first=True) to reduce correlation among dummified variables by dropping one feature value as (0,0) for other two is the same thing 
+    <i>Example</i> 
+    <br><code>OneHotEncoder(categorical_features=[0]).fit_transform(df.columns[:-1].values)</code>
+    <br><code>pd.get_dummies(df[df.columns[:-1]]) </code>to dummify all string variables leaving all numeric intact
+    <br><code>pd.get_dummies(df[df.columns[:-1]], drop_first=True)</code> to reduce correlation among dummified variables by dropping one feature value as (0,0) for other two is the same thing 
 </p>
 <p>
     <strong>Feature scaling</strong>
@@ -58,6 +64,10 @@
     <br>Can use sklearn model selection function train_test_split(from sklearn.model_selection import train_test_split)
     <br>parameters: train_test_split(X, Y, test_size, stratify, random_state)
     <br>test_size: test_split size; stratify=Y(class labels): to ensure that proportion of labels in train and test is same
+    <br><code>
+        from sklearn.model_selection import train_test_split<br>
+        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, stratify=Y, random_state=1)<br>
+        </code>
 </p>
 <p>
     <strong>Selecting important features</strong> 

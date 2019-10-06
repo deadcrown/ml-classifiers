@@ -27,7 +27,18 @@ class MajorityVoteEnsemble(BaseEstimator, CLassifierMixin):
         self.vote = ClassLabel
 
     def fit(self, X, y):
-        pass
+        '''fit individual classifier in self.clsfrs to the train data
+        self.lblenc_ is LabelEncoder instance to ensure class names start with 0
+        self.classes_ is used to store label encoding for target classes_
+        append fit classifiers to self.clsfrs_'''
+        self.lblenc_ = LabelEncoder()
+        self.lblenc_.fit(y)
+        self.classes_ = self.lblenc_.classes_
+        self.clsfrs_ = []
+        for _clf in self.clsfrs:
+            fit_clf = clone(_clf).fit(X, self.lblenc_.transform(y))
+            self.clsfrs_.append(fit_clf)
+        return self
 
     def predict(self, X):
         pass

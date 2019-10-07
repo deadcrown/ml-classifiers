@@ -25,7 +25,7 @@ class MajorityVoteEnsemble(BaseEstimator, ClassifierMixin):
     def __init__(self, clsfrs, wt=None, vote='ClassLabel'):
         self.clsfrs = clsfrs
         self.wt = wt
-        self.vote = ClassLabel
+        self.vote = vote
 
     def fit(self, X, y):
         '''fit individual classifier in self.clsfrs to the train data

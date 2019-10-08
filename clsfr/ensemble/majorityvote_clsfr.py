@@ -22,10 +22,14 @@ from sklearn.pipeline import _name_estimators
 
 class MajorityVoteEnsemble(BaseEstimator, ClassifierMixin):
 
-    def __init__(self, clsfrs, wt=None, vote='ClassLabel'):
-        self.clsfrs = clsfrs
-        self.wt = wt
+    def __init__(self, classifiers, vote='classlabel', wt=None):
+        self.classifiers = classifiers
+        self.named_classifiers = {key: value for
+                                  key, value in
+                                  _name_estimators(classifiers)}
         self.vote = vote
+        self.weights = wt
+
 
     def fit(self, X, y):
         '''fit individual classifier in self.clsfrs to the train data
@@ -35,10 +39,10 @@ class MajorityVoteEnsemble(BaseEstimator, ClassifierMixin):
         self.lblenc_ = LabelEncoder()
         self.lblenc_.fit(y)
         self.classes_ = self.lblenc_.classes_
-        self.clsfrs_ = []
-        for _clf in self.clsfrs:
+        self.classifiers_ = []
+        for _clf in self.classifiers:
             fit_clf = clone(_clf).fit(X, self.lblenc_.transform(y))
-            self.clsfrs_.append(fit_clf)
+            self.classifiers_.append(fit_clf)
         return self
 
     def predict(self, X):
@@ -49,16 +53,16 @@ class MajorityVoteEnsemble(BaseEstimator, ClassifierMixin):
         for a test point, np.argmax(np.average(base_predicttions, weight=base_clsfr_wts, axis=0)) gives the average predicted label
         '''
         # prediction for vote=ClassLabel
-        if self.vote == 'ClassLabel':
+        if self.vote == 'classlabel':
             pred_l = []
             # get predictions
-            for _clf in self.clsfrs:
+            for _clf in self.classifiers_:
                 pred = _clf.predict(X)
                 pred_l.append(pred)
             pred_arr = np.asarray(pred_l).T # use transpose to get prdictions for all classifiers row wise to do a np.bincount() row wise
             # get average prediction for each class label for each classifier
             # avg_ is a 1d array of length n_classes ie weighted bincount for each classifier prediction for each target label 
-            avg_ = np.apply_along_axis(lambda x: np.bincount(x, weight=self.wt), axis=1, array=pred_arr)
+            avg_ = np.apply_along_axis(lambda x: np.bincount(x, weights=self.weights), axis=1, array=pred_arr)
             maj_vote = np.argmax(avg_, axis=1)
         else:
             # get prediction if base classifier gives probabilities
@@ -74,10 +78,10 @@ class MajorityVoteEnsemble(BaseEstimator, ClassifierMixin):
         average out the prediction for each class label by taking a weighted average on axis=0
         returns avg weighted probability for all class labels for all classifiers
         '''
-        clf_l = []
-        for _clf in self.clsfrs:
+        pred_l = []
+        for _clf in self.classifiers_:
             pred = _clf.predict_proba(X)
             pred_l.append(pred)
         pred_arr = np.asarray(pred_l)
-        avg_ = np.average(pred_arr, weight=self.wt, axis=0)
+        avg_ = np.average(pred_arr, weights=self.weights, axis=0)
         return avg_

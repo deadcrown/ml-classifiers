@@ -1,0 +1,132 @@
+<html>
+    <head>
+          <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+            extensions: ["tex2jax.js"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+            tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                processEscapes: true
+            },
+            "HTML-CSS": { availableFonts: ["TeX"] }
+            });
+        </script>
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js">
+        </script>
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full"></script>
+    </head>
+
+    <body>
+        <h2>Supervised learning setup</h2>
+        <hr>
+        <i>Ahmad Faiz</i>
+        <br>
+        <br>
+        <p>
+            In supervised learning setup the objective is to make predictions for a data point with respect to the label space associated with it. Traditional programming is where given data we code 
+            logic that given arguments gives the output. However, this can be limited when generalizing for unseen data points. In supervised learning we feed the data and the associated output for each 
+            data point to a given ML algorithm. This ml algorithm(Hypothesis class) now outputs a program(in the traditional sense) which we can then use for making predictions for unseen data.<br>
+            The phase of learning the program given the data is called training while making predictions on unseen data points is caled testing.<br>
+            The data during training needs an associated label as output and hence training data comes in pairs. Also we need a vector representation for the input data and the associated labels.
+            Example in text is bag-of-words representation, images is flattened pixel representation in a vector and similarly for other cases as well.            
+            <br><br><strong>Setup</strong>
+            For training, the data comes in pairs of inputs. Let <br>
+            $D=\left\{(\mathbf{x}_1,y_1),\dots,(\mathbf{x}_n,y_n)\right\}\subseteq {\cal R}^d\times \mathcal{C}\nonumber$
+            be the data set defining the training data points with associated labels. Here $y_i$ is the label space and $x_i$ is the feature space with each dimension is a feature representing that data point<br>
+            If y is discrete then it is called <mark>classification problem</mark> else if y is continuous then it is <mark>regression</mark> problem. Binary classification is when y is 0 or 1 and similarly multi-class classification 
+            works woth multiple discrete values for y<br>
+            The training data is assumed to be drawn from some prob dist $\mathcal{P}(X,Y)$ and the output program will only work if the test data point is drawn from the same distribution.
+            <br><br>
+            <strong>How to select h(hypothesis function)$h\in\mathcal{H}$</strong><br>
+            hypothesis function can be thought of as an instance of a family of algorithms which follow ceratin data assumptions and have their own bias-variance tradeoff. Hence job of ml practitioner is to understand 
+            the data given and which best hypothesis class can best describe the given problem at hand.<br>
+            Once we can fix on the hypothesis class then we need a method to select the best instance of this hypothesis class so that we get min generalization error and not minimum error on the dataset given.
+            To assist in this we use loss functions. Loss functions tell that for a given $h()$ what is the numer of errors that we make with repect to predictions on the training data.<br>
+            In concept, we can just define a loss function which returns 0 if the prediction for a given data instance $(x,y)$ is correct and returns 1 vice-versa. However, this is a discrete function and hence cant be
+            optimized for different parameters which define a paricular h(called 0/1 Loss).<br>
+            Hence to get the parametrs of h which can minimize the loss function, this loss function needs to be convex. Hence, we have other form of loss functions defined. <br><br>
+            <strong>Binary classification Loss Functions</strong>
+            <ul>
+                <li>0/1 loss function</li>
+                $$
+                \mathcal{L}_{0/1}(h)=\frac{1}{n}\sum^n_{i=1}\delta_{h(\mathbf{x}_i)\ne y_i}, \mbox{ where }\delta_{h(\mathbf{x}_i)\ne y_i}=\begin{cases}
+                1,&\mbox{ if $h(\mathbf{x}_i)\ne y_i$}\\
+                0,&\mbox{ o.w.}
+                \end{cases}
+                $$
+                However, this is a discrete function and not differentiable, hence we define other functions
+                <li>Hinge Loss</li>
+                $$
+                \max\left[1-h_{\mathbf{w}}(\mathbf{x}_{i})y_{i},0\right]^{p}
+                $$
+                Normally used in SVMs. If p=1 then standard SVM, if p=2 then hingelesss SVM
+                <li>Log-Loss</li>
+                $$
+                \left.\log(1+e^{-h_{\mathbf{w}}(\mathbf{x}_{i})y_{i}})\right.
+                $$
+                Frequently used loss function since ouput is well calibrated probability.
+                <li>Exponential Loss</li>
+                $$
+                \left. e^{-h_{\mathbf{w}}(\mathbf{x}_{i})y_{i}}\right.
+                $$
+                Agressive loss function, penalizes heavily. Used in AdaBoost.
+            </ul>
+            <img src="images/classificationlosses.png" width="600"><br><br>
+            <strong>Regression Loss Functions</strong>
+            <ul>
+                <li> square loss function</li>
+                $$
+                \mathcal{L}_{sq}(h)=\frac{1}{n}\sum^n_{i=1}(h(\mathbf{x}_i)-y_i)^2.
+                $$
+                Common use setting is regression problems. This loss function will penalize points which are far away from the prediction for the trainig. Hence more sensitive to outliers
+                <li>Absolute loss</li>
+                $$
+                \mathcal{L}_{abs}(h)=\frac{1}{n}\sum^n_{i=1}|h(\mathbf{x}_i)-y_i|.
+                $$
+                Much less sensitive to outliers but not differentiable at 0
+                <li>Huber Loss</li>
+                $$
+                \left.\frac{1}{2}\left(h(\mathbf{x}_{i})-y_{i}\right)^{2}\right.
+                $$
+                if $$|h(\mathbf{x}_{i})-y_{i}|<\delta$$
+                <br>otherwise $$
+                \left.\delta(|h(\mathbf{x}_{i})-y_{i}|-\frac{\delta}{2})\right.$$
+                <br>Best of both worlds as uses square loss for nearby points ane absolute loss for farther points. Also differentiable at 0 now.
+                <li>Log-Cosh</li>
+                $$\left.log(cosh(h(\mathbf{x}_{i})-y_{i}))\right.$$<br>
+                where $$\left.cosh(x)=\frac{e^{x}+e^{-x}}{2}\right.$$
+                Similar to Huber loss but twice differentiable everywhere, hence can be solved in close form 
+            </ul>
+            <img src="images/regressionlosses.png" width="600"><br><br>
+        </p>
+        <br>
+        <p>
+            <h3>Minimizing generalization error</h3>
+            $h=\textrm{argmin}_{h\in{\mathcal{H}}}\mathcal{L}(h)$<br>
+            Since we dont know the test data but we assume that it is drawn from the same distribution as training, we ue the train test split to keep some data unssen from the learning algorithm 
+            to get an expected error for unseen data points.<br>
+            Practicaly we divied the dataset into three splits: training, testing, and validation datasets<br>
+            Validation dataset is required to prevent overfitting on the test dataset. Understand that we need to capture all training data variation within these splits to get the best expected generalization error.
+            Common wrt to size of this split is 80:10:10 for train:test:validation, however this also depends on the problem and the amount of data present for training
+        </p>
+        <p>
+            <h3>Final Summary</h3>
+            $$
+            \mbox{Learning: }h^*(\cdot)=\textrm{argmin}_{h(\cdot)\in\mathcal{H}}\frac{1}{|D_\mathrm{TR}|}\sum_{(\mathbf{x},y)\in D_\mathrm{TR}}\ell(\mathbf{x},y|h(\cdot)),
+            $$
+            during training 
+            <br><br>
+            evalutaion is done on test loss:
+            $$
+            \mbox{Evaluation: }\epsilon_\mathrm{TE}=\frac{1}{|D_{TE}|}\sum_{(\mathbf{x},y)\in D_\mathrm{TE}} \ell (\mathbf{x},y|h^*(\cdot)).
+            $$
+            <br><br>
+            if samples are drawn IID from distribution P then test loss is a good approximator of the generalization error:
+            $$
+            \mbox{Generalization: }\epsilon=\mathbb{E}_{(\mathbf{x},y)\sim \mathcal{P}}[\ell(\mathbf{x},y|h^*(\cdot))].
+            $$
+        </p>
+
+    </body>
+</html>
